@@ -1,0 +1,371 @@
+/* Import Page Styles */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+}
+
+/* Stepper */
+.stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.stepperItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    transition: color var(--transition-fast);
+}
+
+.stepperItem:not(:last-child)::after {
+    content: '→';
+    margin-left: var(--space-4);
+    font-size: var(--font-size-lg);
+}
+
+.stepperActive {
+    color: var(--primary);
+}
+
+.stepperCircle {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    border: 2px solid currentColor;
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+.stepperLabel {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+/* Error */
+.error {
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+.loading {
+    text-align: center;
+    padding: var(--space-6);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/* Step 1: Upload */
+.uploadContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.dropzone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-12);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    background: var(--surface);
+}
+
+.dropzone:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.dropzoneIcon {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+}
+
+.dropzoneText {
+    font-size: var(--font-size-lg);
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.dropzoneHint {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+/* Step 2: Mapping */
+.mappingContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.subtitle {
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+}
+
+.mappingGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.previewTable {
+    overflow-x: auto;
+    margin-bottom: var(--space-6);
+}
+
+.previewTable table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.previewTable th {
+    text-align: left;
+    padding: var(--space-3);
+    background: var(--surface-hover);
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 2px solid var(--border);
+}
+
+.previewTable td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.previewTable tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+/* Step 3: Confirmation */
+.confirmContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.summary {
+    display: flex;
+    gap: var(--space-6);
+    padding: var(--space-5);
+    background: var(--primary-light);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+}
+
+.summaryItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.summaryLabel {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.summaryValue {
+    font-family: var(--font-display);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.transactionsList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: var(--space-6);
+}
+
+.txItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+.txLeft {
+    display: flex;
+    flex-direction: column;
+}
+
+.txDesc {
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+}
+
+.txMeta {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.txRight {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.txAmount {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+}
+
+.income {
+    color: var(--success);
+}
+
+.expense {
+    color: var(--danger);
+}
+
+.moreTransactions {
+    text-align: center;
+    padding: var(--space-4);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+}
+
+/* Success Screen */
+.successCard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-12);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.successIcon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+}
+
+.successTitle {
+    font-family: var(--font-display);
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    margin-bottom: var(--space-6);
+}
+
+.successStats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-8);
+    margin-bottom: var(--space-6);
+}
+
+.successStat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.successNumber {
+    font-family: var(--font-display);
+    font-size: var(--font-size-4xl);
+    font-weight: 800;
+    color: var(--success);
+}
+
+.successNumber.skipped {
+    color: var(--warning);
+}
+
+.successLabel {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.successHint {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-align: left;
+}
+
+.successActions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stepper {
+        flex-direction: column;
+    }
+
+    .stepperItem:not(:last-child)::after {
+        content: '↓';
+        margin-left: 0;
+        margin-top: var(--space-2);
+    }
+
+    .mappingGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .summary {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .successStats {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+}

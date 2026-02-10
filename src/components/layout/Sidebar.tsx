@@ -23,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
     { href: '/budgets', label: 'Orçamentos', icon: '📋' },
     { href: '/goals', label: 'Metas', icon: '🎯' },
     { href: '/reports', label: 'Relatórios', icon: '📈' },
+    { href: '/import', label: 'Importar', icon: '📥' },
 ];
 
 export default function Sidebar() {

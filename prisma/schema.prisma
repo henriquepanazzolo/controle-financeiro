@@ -5,7 +5,7 @@
 // Prepared for future bank connection integration.
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -48,6 +48,12 @@ enum GoalStatus {
   CANCELLED
 }
 
+enum ImportStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 // ============================================
 // User & Auth
 // ============================================
@@ -66,6 +72,7 @@ model User {
   transactions Transaction[]
   budgets      Budget[]
   goals        Goal[]
+  importLogs   ImportLog[]
   invitesCreated InviteCode[] @relation("InviteCreator")
 
   @@map("users")
@@ -259,4 +266,27 @@ model GoalContribution {
 
   @@index([goalId])
   @@map("goal_contributions")
+}
+
+// ============================================
+// Import Logs
+// ============================================
+
+model ImportLog {
+  id           String       @id @default(uuid())
+  userId       String
+  fileName     String
+  bankSource   String?      // e.g. "nubank", "mercadopago", "caixa"
+  totalRows    Int
+  importedRows Int          @default(0)
+  skippedRows  Int          @default(0)
+  status       ImportStatus @default(PROCESSING)
+  errorMessage String?
+  createdAt    DateTime     @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("import_logs")
 }

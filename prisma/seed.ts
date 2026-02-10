@@ -4,7 +4,14 @@
  * Creates an initial admin user with invite code for first login.
  * Run with: npx tsx prisma/seed.ts
  */
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Carrega as variáveis do .env.local (padrão do Next.js)
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+// Fallback para .env se necessário
+dotenv.config();
+
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
