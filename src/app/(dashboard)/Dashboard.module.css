@@ -1,0 +1,234 @@
+/* ============================================
+ * Dashboard Page Styles
+ * ============================================ */
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+/* Summary Cards Grid */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-5);
+}
+
+.summaryCard {
+    position: relative;
+    overflow: hidden;
+}
+
+.summaryCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.cardIncome::before {
+    background: var(--success);
+}
+
+.cardExpense::before {
+    background: var(--danger);
+}
+
+.cardBalance::before {
+    background: var(--primary-gradient);
+}
+
+.cardInfo::before {
+    background: var(--info);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.cardIcon {
+    font-size: 1.3rem;
+}
+
+.cardTitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.cardValue {
+    font-family: var(--font-display);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    animation: countUp 0.5s ease-out;
+}
+
+.cardVariation {
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-2);
+    font-weight: 500;
+}
+
+.variationUp {
+    color: var(--success);
+}
+
+.variationDown {
+    color: var(--danger);
+}
+
+/* Charts Grid */
+.chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+}
+
+.chartCard {
+    min-height: 380px;
+}
+
+.chartTitle {
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+}
+
+.emptyChart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+/* Pie Chart Legend */
+.pieLegend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+}
+
+.legendLabel {
+    flex: 1;
+    color: var(--text-secondary);
+}
+
+.legendValue {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Top 5 Expenses */
+.topList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.topItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--surface-hover);
+    transition: background var(--transition-fast);
+}
+
+.topItem:hover {
+    background: var(--primary-light);
+}
+
+.topRank {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background: var(--primary-gradient);
+    color: #FFFFFF;
+    font-family: var(--font-display);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.topInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.topDescription {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.topCategory {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.topAmount {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--danger);
+    font-size: var(--font-size-sm);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .chartsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

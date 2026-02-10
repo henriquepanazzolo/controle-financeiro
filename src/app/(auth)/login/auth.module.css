@@ -1,0 +1,92 @@
+/* ============================================
+ * Auth Pages Styles
+ * ============================================ */
+
+.authPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--background);
+    padding: var(--space-4);
+}
+
+.authCard {
+    width: 100%;
+    max-width: 440px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-10);
+    box-shadow: var(--shadow-lg);
+    animation: scaleIn 0.3s ease-out;
+}
+
+.authHeader {
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.authLogo {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-3);
+    filter: drop-shadow(0 0 12px rgba(74, 122, 255, 0.3));
+}
+
+.authTitle {
+    font-family: var(--font-display);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.authSubtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.authError {
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+    text-align: center;
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.authFooter {
+    text-align: center;
+    margin-top: var(--space-6);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.authFooter a {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.authFooter a:hover {
+    text-decoration: underline;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
