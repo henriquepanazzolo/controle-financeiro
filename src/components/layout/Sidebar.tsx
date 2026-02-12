@@ -8,6 +8,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import styles from './Sidebar.module.css';
 
 interface NavItem {
@@ -19,6 +20,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
     { href: '/', label: 'Dashboard', icon: '📊' },
     { href: '/transactions', label: 'Transações', icon: '💸' },
+    { href: '/accounts', label: 'Contas', icon: '🏦' },
     { href: '/categories', label: 'Categorias', icon: '🏷️' },
     { href: '/budgets', label: 'Orçamentos', icon: '📋' },
     { href: '/goals', label: 'Metas', icon: '🎯' },
@@ -56,6 +58,14 @@ export default function Sidebar() {
             </nav>
 
             <div className={styles.footer}>
+                <button
+                    onClick={() => signOut({ callbackUrl: '/login' })}
+                    className={styles.navItem}
+                    style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                >
+                    <span className={styles.navIcon}>🚪</span>
+                    <span className={styles.navLabel}>Sair</span>
+                </button>
                 <div className={styles.version}>v1.0.0</div>
             </div>
         </aside>

@@ -54,8 +54,9 @@ export async function getTransactionsByMonth(
     year: number,
     type?: 'INCOME' | 'EXPENSE',
 ): Promise<TransactionDTO[]> {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0, 23, 59, 59);
+    // Use UTC to avoid timezone issues
+    const startDate = new Date(Date.UTC(year, month - 1, 1));
+    const endDate = new Date(Date.UTC(year, month, 0, 23, 59, 59, 999));
 
     const where: Prisma.TransactionWhereInput = {
         userId,
@@ -393,4 +394,19 @@ export async function deleteTransaction(
     }
 
     await prisma.transaction.delete({ where: { id: transactionId } });
+}
+
+/**
+ * Deletes multiple transactions (only if owned by user).
+ */
+export async function deleteTransactions(
+    userId: string,
+    transactionIds: string[],
+): Promise<void> {
+    await prisma.transaction.deleteMany({
+        where: {
+            id: { in: transactionIds },
+            userId, // Ensure ownership
+        },
+    });
 }

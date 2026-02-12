@@ -11,13 +11,19 @@ import DashboardClient from './DashboardClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ month?: string; year?: string }>;
+}) {
     const session = await auth();
     if (!session?.user?.id) redirect('/login');
 
+    const params = await searchParams;
     const now = new Date();
-    const month = now.getMonth() + 1;
-    const year = now.getFullYear();
+
+    const month = params.month ? parseInt(params.month) : now.getMonth() + 1;
+    const year = params.year ? parseInt(params.year) : now.getFullYear();
 
     const [summary, prevSummary, categoryBreakdown, topExpenses, monthlyData] = await Promise.all([
         getMonthSummary(session.user.id, month, year),

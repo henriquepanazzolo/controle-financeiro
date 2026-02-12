@@ -14,7 +14,7 @@ import NextAuth from 'next-auth';
 import { authConfig } from '@/lib/auth.config';
 
 /** Routes that don't require authentication */
-const PUBLIC_ROUTES = ['/login', '/register', '/api/auth'];
+const PUBLIC_ROUTES = ['/login', '/register', '/api/auth', '/api/setup-account', '/api/debug-session', '/api/debug-transactions'];
 
 const { auth } = NextAuth(authConfig);
 

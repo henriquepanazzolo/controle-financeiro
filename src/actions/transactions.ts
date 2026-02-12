@@ -127,7 +127,32 @@ export async function deleteTransaction(formData: FormData): Promise<ActionResul
         revalidatePath('/transactions');
         return { success: true };
     } catch (error) {
-        console.error('[deleteTransaction]', error);
         return { success: false, error: 'Erro ao excluir transação.' };
+    }
+}
+
+/**
+ * Deletes multiple transactions.
+ */
+export async function bulkDeleteTransactions(formData: FormData): Promise<ActionResult> {
+    try {
+        const userId = await getAuthenticatedUserId();
+        const idsString = formData.get('ids') as string;
+
+        if (!idsString) return { success: false, error: 'Ids inválidos.' };
+
+        const ids = JSON.parse(idsString);
+        if (!Array.isArray(ids) || ids.length === 0) {
+            return { success: false, error: 'Nenhuma transação selecionada.' };
+        }
+
+        await transactionsDAL.deleteTransactions(userId, ids);
+
+        revalidatePath('/');
+        revalidatePath('/transactions');
+        return { success: true };
+    } catch (error) {
+        console.error('[bulkDeleteTransactions]', error);
+        return { success: false, error: 'Erro ao excluir transações.' };
     }
 }

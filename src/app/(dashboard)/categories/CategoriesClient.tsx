@@ -6,6 +6,7 @@
 import { useState, useCallback } from 'react';
 import { createCategory, createSubcategory, toggleCategory } from '@/actions/categories';
 import type { CategoryDTO } from '@/lib/dal/categories';
+import EmojiPicker from '@/components/ui/EmojiPicker';
 import styles from './Categories.module.css';
 
 interface Props {
@@ -16,6 +17,7 @@ export default function CategoriesClient({ categories }: Props) {
     const [showForm, setShowForm] = useState(false);
     const [showSubForm, setShowSubForm] = useState<string | null>(null);
     const [filter, setFilter] = useState<'ALL' | 'INCOME' | 'EXPENSE'>('ALL');
+    const [icon, setIcon] = useState('🏷️');
 
     const filtered = filter === 'ALL'
         ? categories
@@ -125,8 +127,9 @@ export default function CategoriesClient({ categories }: Props) {
                                 </select>
                             </div>
                             <div className="input-group">
-                                <label>Ícone (emoji)</label>
-                                <input name="icon" className="input" placeholder="🏷️" />
+                                <label>Ícone</label>
+                                <input type="hidden" name="icon" value={icon} />
+                                <EmojiPicker value={icon} onChange={setIcon} />
                             </div>
                             <div className="input-group">
                                 <label>Cor</label>

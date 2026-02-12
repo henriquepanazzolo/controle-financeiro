@@ -10,13 +10,19 @@ import TransactionsClient from './TransactionsClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function TransactionsPage() {
+export default async function TransactionsPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ month?: string; year?: string }>;
+}) {
     const session = await auth();
     if (!session?.user?.id) redirect('/login');
 
+    const params = await searchParams;
     const now = new Date();
-    const month = now.getMonth() + 1;
-    const year = now.getFullYear();
+
+    const month = params.month ? parseInt(params.month) : now.getMonth() + 1;
+    const year = params.year ? parseInt(params.year) : now.getFullYear();
 
     const [transactions, categories, accounts] = await Promise.all([
         getTransactionsByMonth(session.user.id, month, year),

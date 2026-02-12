@@ -10,6 +10,7 @@
  */
 import { PrismaClient } from '@/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
@@ -25,7 +26,13 @@ function createPrismaClient(): PrismaClient {
     if (!connectionString) {
         throw new Error('DATABASE_URL environment variable is not set');
     }
-    const adapter = new PrismaPg({ connectionString });
+
+    // Configura o pool de conexões do PostgreSQL
+    const pool = new Pool({ connectionString });
+
+    // Inicializa o adaptador do Prisma para PostgreSQL
+    const adapter = new PrismaPg(pool);
+
     return new PrismaClient({ adapter });
 }
 

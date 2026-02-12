@@ -22,7 +22,7 @@ interface Props {
 
 interface ParsedData {
     headers: string[];
-    rows: Array<Record<string, string | number | null>>;
+    rows: Array<Record<string, string | number | Date | null>>;
     totalRows: number;
     suggestedMapping: {
         dateColumn?: string;
@@ -243,8 +243,8 @@ export default function ImportClient({ accounts, categories }: Props) {
                     const type: 'INCOME' | 'EXPENSE' =
                         (typeof amountRaw === 'number' && amountRaw < 0) ||
                             (typeof amountRaw === 'string' && amountRaw.includes('-'))
-                            ? 'EXPENSE'
-                            : 'EXPENSE'; // Default to expense (banks usually show expenses positive)
+                            ? 'INCOME'
+                            : 'EXPENSE'; // Default to expense (positive values are usually expenses in this context)
 
                     const externalId = generateExternalId(date, amount, desc);
 
@@ -259,7 +259,7 @@ export default function ImportClient({ accounts, categories }: Props) {
                     return null;
                 }
             })
-            .filter((t): t is MappedTransaction => t !== null);
+            .filter((t) => t !== null) as MappedTransaction[];
 
         setTransactions(mapped);
         setStep(3);
@@ -490,9 +490,9 @@ export default function ImportClient({ accounts, categories }: Props) {
                                 <tbody>
                                     {parsedData.rows.slice(0, 10).map((row, i) => (
                                         <tr key={i}>
-                                            <td>{dateColumn && row[dateColumn]}</td>
-                                            <td>{descriptionColumn && row[descriptionColumn]}</td>
-                                            <td>{amountColumn && row[amountColumn]}</td>
+                                            <td>{dateColumn && (row[dateColumn] instanceof Date ? row[dateColumn].toLocaleDateString('pt-BR') : row[dateColumn])}</td>
+                                            <td>{descriptionColumn && (row[descriptionColumn] instanceof Date ? row[descriptionColumn].toLocaleDateString('pt-BR') : row[descriptionColumn])}</td>
+                                            <td>{amountColumn && (row[amountColumn] instanceof Date ? row[amountColumn].toLocaleDateString('pt-BR') : row[amountColumn])}</td>
                                         </tr>
                                     ))}
                                 </tbody>

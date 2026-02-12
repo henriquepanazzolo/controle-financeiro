@@ -3,10 +3,10 @@
  */
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDate } from '@/utils/formatDate';
-import { createTransaction, deleteTransaction, updateTransactionStatus } from '@/actions/transactions';
+import { createTransaction, deleteTransaction, updateTransactionStatus, bulkDeleteTransactions } from '@/actions/transactions';
 import type { TransactionDTO } from '@/lib/dal/transactions';
 import type { CategoryDTO } from '@/lib/dal/categories';
 import styles from './Transactions.module.css';
@@ -18,7 +18,12 @@ interface Props {
 }
 
 export default function TransactionsClient({ initialTransactions, categories, accounts }: Props) {
-    const [transactions] = useState(initialTransactions);
+    const [transactions, setTransactions] = useState(initialTransactions);
+
+    // Sync with server data when month changes
+    useEffect(() => {
+        setTransactions(initialTransactions);
+    }, [initialTransactions]);
     const [showForm, setShowForm] = useState(false);
     const [filter, setFilter] = useState<'ALL' | 'INCOME' | 'EXPENSE'>('ALL');
     const [formError, setFormError] = useState('');
@@ -27,6 +32,48 @@ export default function TransactionsClient({ initialTransactions, categories, ac
     const filtered = filter === 'ALL'
         ? transactions
         : transactions.filter((t) => t.type === filter);
+
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+    // Clear selection when filter changes
+    useEffect(() => {
+        setSelectedIds(new Set());
+    }, [filter]);
+
+    const handleSelectAll = useCallback(() => {
+        if (selectedIds.size === filtered.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(filtered.map(t => t.id)));
+        }
+    }, [filtered, selectedIds]);
+
+    const handleSelectOne = useCallback((id: string) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    }, []);
+
+    const handleBulkDelete = useCallback(async () => {
+        if (!confirm(`Excluir ${selectedIds.size} transações selecionadas?`)) return;
+
+        const fd = new FormData();
+        fd.set('ids', JSON.stringify(Array.from(selectedIds))); // Fix: Pass as JSON string
+
+        const result = await bulkDeleteTransactions(fd);
+        if (result.success) {
+            setSelectedIds(new Set());
+            window.location.reload();
+        } else {
+            alert(result.error || 'Erro ao excluir transações.');
+        }
+    }, [selectedIds]);
 
     const handleCreate = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -91,14 +138,42 @@ export default function TransactionsClient({ initialTransactions, categories, ac
                 ))}
             </div>
 
+            {/* Bulk Actions & Selection Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                        type="checkbox"
+                        checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                        onChange={handleSelectAll}
+                        style={{ width: '1.2rem', height: '1.2rem', cursor: 'pointer' }}
+                        title="Selecionar todos"
+                    />
+                    <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                        {selectedIds.size > 0 ? `${selectedIds.size} selecionados` : 'Selecionar todos'}
+                    </span>
+                </div>
+
+                {selectedIds.size > 0 && (
+                    <button onClick={handleBulkDelete} className="btn btn--danger btn--sm">
+                        Excluir Selecionados ({selectedIds.size})
+                    </button>
+                )}
+            </div>
+
             {/* Transactions List */}
             <div className={styles.list}>
                 {filtered.length === 0 ? (
                     <div className={styles.empty}>Nenhuma transação encontrada.</div>
                 ) : (
                     filtered.map((t) => (
-                        <div key={t.id} className={`card card--flat ${styles.item}`}>
-                            <div className={styles.itemLeft}>
+                        <div key={t.id} className={`card card--flat ${styles.item} ${selectedIds.has(t.id) ? styles.selected : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <input
+                                type="checkbox"
+                                checked={selectedIds.has(t.id)}
+                                onChange={() => handleSelectOne(t.id)}
+                                style={{ width: '1.2rem', height: '1.2rem', cursor: 'pointer' }}
+                            />
+                            <div className={styles.itemLeft} style={{ flex: 1 }}>
                                 <span className={styles.itemIcon}>{t.categoryIcon ?? '💰'}</span>
                                 <div className={styles.itemInfo}>
                                     <span className={styles.itemDesc}>{t.description}</span>
@@ -115,7 +190,7 @@ export default function TransactionsClient({ initialTransactions, categories, ac
                                 <button
                                     onClick={() => handleToggleStatus(t.id, t.status)}
                                     className={`badge ${t.status === 'PAID' ? 'badge--success' :
-                                            t.status === 'PENDING' ? 'badge--warning' : 'badge--danger'
+                                        t.status === 'PENDING' ? 'badge--warning' : 'badge--danger'
                                         }`}
                                     title="Clique para alterar status"
                                 >
