@@ -8,11 +8,13 @@ import type { MonthSummaryDTO, CategoryBreakdownDTO, TransactionDTO } from '@/li
 import {
     PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
-    LineChart, Line, Area, AreaChart,
+    AreaChart, Area,
 } from 'recharts';
 import { getMonthName } from '@/utils/formatDate';
-import styles from './Dashboard.module.css';
 import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 
 interface DashboardClientProps {
     summary: MonthSummaryDTO;
@@ -29,8 +31,8 @@ function calcVariation(current: number, previous: number): number {
 }
 
 const DEFAULT_COLORS = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-    '#DDA0DD', '#FF8C42', '#74B9FF', '#A78BFA', '#F9CA24',
+    '#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b',
+    '#10b981', '#6366f1', '#14b8a6', '#f43f5e', '#84cc16',
 ];
 
 export default function DashboardClient({
@@ -75,184 +77,223 @@ export default function DashboardClient({
     }));
 
     return (
-        <div className={styles.dashboard}>
+        <div className="flex flex-col gap-6">
             {/* Summary Cards */}
-            <div className={styles.cards}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <SummaryCard
                     title="Saldo do Mês"
                     value={summary.balance}
                     variation={balanceVar}
-                    icon="💰"
+                    icon={DollarSign}
                     type="balance"
+                    gradient="from-blue-600 to-cyan-500"
                 />
                 <SummaryCard
                     title="Receitas"
                     value={summary.totalIncome}
                     variation={incomeVar}
-                    icon="📈"
+                    icon={TrendingUp}
                     type="income"
+                    gradient="from-emerald-500 to-teal-400"
                 />
                 <SummaryCard
                     title="Despesas"
                     value={summary.totalExpense}
                     variation={expenseVar}
-                    icon="📉"
+                    icon={TrendingDown}
                     type="expense"
+                    gradient="from-rose-500 to-red-400"
                 />
                 <SummaryCard
                     title="Transações"
                     value={summary.transactionCount}
                     isCount
-                    icon="📊"
+                    icon={Activity}
                     type="info"
+                    gradient="from-violet-500 to-purple-400"
                 />
             </div>
 
             {/* Charts Grid */}
-            <div className={styles.chartsGrid}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Pie Chart — Despesas por Categoria */}
-                <div className={`card ${styles.chartCard}`}>
-                    <h3 className={styles.chartTitle}>Despesas por Categoria</h3>
-                    {mounted && pieData.length > 0 ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={100}
-                                    paddingAngle={3}
-                                    dataKey="value"
-                                    animationBegin={200}
-                                    animationDuration={800}
-                                >
-                                    {pieData.map((entry, index) => (
-                                        <Cell key={entry.name} fill={entry.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]} />
+                <Card className="min-h-[400px]">
+                    <CardHeader>
+                        <CardTitle>Despesas por Categoria</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {mounted && pieData.length > 0 ? (
+                            <div className="flex flex-col md:flex-row items-center gap-8">
+                                <LinkPieChart data={pieData} />
+                                {/* Category Legend */}
+                                <div className="flex flex-col gap-3 w-full md:w-auto">
+                                    {categoryBreakdown.slice(0, 5).map((c, i) => (
+                                        <div key={c.categoryId} className="flex items-center gap-2 text-sm">
+                                            <span
+                                                className="w-3 h-3 rounded-full flex-shrink-0"
+                                                style={{ backgroundColor: c.categoryColor || DEFAULT_COLORS[i % DEFAULT_COLORS.length] }}
+                                            />
+                                            <span className="text-slate-400 flex-1">{c.categoryName}</span>
+                                            <span className="font-semibold text-slate-200">{c.percentage.toFixed(0)}%</span>
+                                        </div>
                                     ))}
-                                </Pie>
-                                <Tooltip
-                                    formatter={(value) => formatCurrency(Number(value ?? 0))}
-                                    contentStyle={{
-                                        background: 'var(--surface)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: 'var(--radius-md)',
-                                        fontSize: '0.875rem',
-                                    }}
-                                />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    ) : mounted ? (
-                        <div className={styles.emptyChart}>Sem despesas neste mês</div>
-                    ) : (
-                        <div style={{ height: 300 }} /> // Placeholder during hydration
-                    )}
-                    {/* Category Legend */}
-                    <div className={styles.pieLegend}>
-                        {categoryBreakdown.slice(0, 5).map((c) => (
-                            <div key={c.categoryId} className={styles.legendItem}>
-                                <span
-                                    className={styles.legendDot}
-                                    style={{ backgroundColor: c.categoryColor || '#999' }}
-                                />
-                                <span className={styles.legendLabel}>{c.categoryName}</span>
-                                <span className={styles.legendValue}>{c.percentage.toFixed(0)}%</span>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        ) : mounted ? (
+                            <div className="flex flex-col items-center justify-center h-[300px] text-slate-500 text-sm">
+                                Sem despesas este mês
+                            </div>
+                        ) : (
+                            <div className="h-[300px] animate-pulse bg-slate-800/20 rounded-lg" />
+                        )}
+                    </CardContent>
+                </Card>
 
                 {/* Bar Chart — Receita vs Despesa */}
-                <div className={`card ${styles.chartCard}`}>
-                    <h3 className={styles.chartTitle}>Receita vs Despesa</h3>
-                    {mounted ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={barData} barGap={4}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                                <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                                <Tooltip
-                                    formatter={(value) => formatCurrency(Number(value ?? 0))}
-                                    contentStyle={{
-                                        background: 'var(--surface)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: 'var(--radius-md)',
-                                    }}
-                                />
-                                <Legend />
-                                <Bar dataKey="Receitas" fill="#10B981" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="Despesas" fill="#EF4444" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    ) : (
-                        <div style={{ height: 300 }} />
-                    )}
-                </div>
+                <Card className="min-h-[400px]">
+                    <CardHeader>
+                        <CardTitle>Receita vs Despesa</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {mounted ? (
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={barData} barGap={4}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                                    <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <Tooltip
+                                        cursor={{ fill: '#1e293b', opacity: 0.4 }}
+                                        formatter={(value) => formatCurrency(Number(value ?? 0))}
+                                        contentStyle={{
+                                            background: '#0f172a',
+                                            border: '1px solid #1e293b',
+                                            borderRadius: '8px',
+                                            color: '#f8fafc',
+                                        }}
+                                    />
+                                    <Legend />
+                                    <Bar dataKey="Receitas" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                    <Bar dataKey="Despesas" fill="#f43f5e" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-[300px] animate-pulse bg-slate-800/20 rounded-lg" />
+                        )}
+                    </CardContent>
+                </Card>
 
                 {/* Area Chart — Evolução do Saldo */}
-                <div className={`card ${styles.chartCard}`}>
-                    <h3 className={styles.chartTitle}>Evolução do Saldo</h3>
-                    {mounted ? (
-                        <ResponsiveContainer width="100%" height={300}>
-                            <AreaChart data={lineData}>
-                                <defs>
-                                    <linearGradient id="saldoGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                                <XAxis dataKey="name" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                                <Tooltip
-                                    formatter={(value) => formatCurrency(Number(value ?? 0))}
-                                    contentStyle={{
-                                        background: 'var(--surface)',
-                                        border: '1px solid var(--border)',
-                                        borderRadius: 'var(--radius-md)',
-                                    }}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="Saldo"
-                                    stroke="var(--primary)"
-                                    strokeWidth={2}
-                                    fill="url(#saldoGradient)"
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    ) : (
-                        <div style={{ height: 300 }} />
-                    )}
-                </div>
+                <Card className="min-h-[400px]">
+                    <CardHeader>
+                        <CardTitle>Evolução do Saldo</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {mounted ? (
+                            <ResponsiveContainer width="100%" height={300}>
+                                <AreaChart data={lineData}>
+                                    <defs>
+                                        <linearGradient id="saldoGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                                    <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                                    <Tooltip
+                                        formatter={(value) => formatCurrency(Number(value ?? 0))}
+                                        contentStyle={{
+                                            background: '#0f172a',
+                                            border: '1px solid #1e293b',
+                                            borderRadius: '8px',
+                                            color: '#f8fafc',
+                                        }}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="Saldo"
+                                        stroke="#3b82f6"
+                                        strokeWidth={3}
+                                        fill="url(#saldoGradient)"
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-[300px] animate-pulse bg-slate-800/20 rounded-lg" />
+                        )}
+                    </CardContent>
+                </Card>
 
                 {/* Top 5 Expenses */}
-                <div className={`card ${styles.chartCard}`}>
-                    <h3 className={styles.chartTitle}>Top 5 Despesas</h3>
-                    {topExpenses.length > 0 ? (
-                        <div className={styles.topList}>
-                            {topExpenses.map((expense, index) => (
-                                <div key={expense.id} className={styles.topItem}>
-                                    <div className={styles.topRank}>{index + 1}</div>
-                                    <div className={styles.topInfo}>
-                                        <span className={styles.topDescription}>{expense.description}</span>
-                                        <span className={styles.topCategory}>
-                                            {expense.categoryIcon} {expense.categoryName}
+                <Card className="min-h-[400px]">
+                    <CardHeader>
+                        <CardTitle>Top 5 Despesas</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {topExpenses.length > 0 ? (
+                            <div className="flex flex-col gap-3">
+                                {topExpenses.map((expense, index) => (
+                                    <div key={expense.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-700/50">
+                                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 text-slate-400 font-bold text-xs ring-1 ring-slate-700">
+                                            {index + 1}
+                                        </div>
+                                        <div className="flex-1 flex flex-col">
+                                            <span className="text-sm font-medium text-slate-200">{expense.description}</span>
+                                            <span className="text-xs text-slate-500 flex items-center gap-1">
+                                                {expense.categoryIcon} {expense.categoryName}
+                                            </span>
+                                        </div>
+                                        <span className="font-display font-semibold text-rose-400">
+                                            {formatCurrency(expense.amount)}
                                         </span>
                                     </div>
-                                    <span className={styles.topAmount}>
-                                        {formatCurrency(expense.amount)}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className={styles.emptyChart}>Sem despesas neste mês</div>
-                    )}
-                </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-[300px] text-slate-500 text-sm">
+                                Sem despesas este mês
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
+}
+
+function LinkPieChart({ data }: { data: any[] }) {
+    return (
+        <div style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                    <Pie
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={90}
+                        paddingAngle={4}
+                        dataKey="value"
+                        cornerRadius={4}
+                        stroke="none"
+                    >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Tooltip
+                        formatter={(value) => formatCurrency(Number(value ?? 0))}
+                        contentStyle={{
+                            background: '#0f172a',
+                            border: '1px solid #1e293b',
+                            borderRadius: '8px',
+                            color: '#f8fafc',
+                        }}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
+    )
 }
 
 /* Summary Card Sub-component */
@@ -260,35 +301,48 @@ function SummaryCard({
     title,
     value,
     variation,
-    icon,
+    icon: Icon,
     type,
     isCount = false,
+    gradient,
 }: {
     title: string;
     value: number;
     variation?: number;
-    icon: string;
+    icon: React.ElementType;
     type: 'income' | 'expense' | 'balance' | 'info';
     isCount?: boolean;
+    gradient: string;
 }) {
-    const typeClass = styles[`card${type.charAt(0).toUpperCase() + type.slice(1)}`];
     const isPositiveVariation = (variation ?? 0) >= 0;
-    const variationPrefix = isPositiveVariation ? '↑' : '↓';
 
     return (
-        <div className={`card ${styles.summaryCard} ${typeClass ?? ''}`}>
-            <div className={styles.cardHeader}>
-                <span className={styles.cardIcon}>{icon}</span>
-                <span className={styles.cardTitle}>{title}</span>
-            </div>
-            <div className={styles.cardValue}>
-                {isCount ? value.toLocaleString('pt-BR') : formatCurrency(value)}
-            </div>
-            {variation !== undefined && (
-                <div className={`${styles.cardVariation} ${isPositiveVariation ? styles.variationUp : styles.variationDown}`}>
-                    {variationPrefix} {Math.abs(variation).toFixed(1)}% vs mês anterior
+        <Card className="relative overflow-hidden group hover:border-slate-600/50 transition-all duration-300">
+            <div className={`absolute top-0 inset-x-0 h-1 bg-gradient-to-r ${gradient}`} />
+            <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-slate-400 font-medium text-sm">{title}</span>
+                    <div className={`p-2 rounded-lg bg-gradient-to-br ${gradient} opacity-80 group-hover:opacity-100 transition-opacity`}>
+                        <Icon className="w-4 h-4 text-white" />
+                    </div>
                 </div>
-            )}
-        </div>
+
+                <div className="space-y-1">
+                    <h3 className="font-display text-2xl font-bold text-slate-100">
+                        {isCount ? value.toLocaleString('pt-BR') : formatCurrency(value)}
+                    </h3>
+
+                    {variation !== undefined && (
+                        <div className={cn(
+                            "flex items-center gap-1 text-xs font-medium",
+                            isPositiveVariation ? "text-emerald-400" : "text-rose-400"
+                        )}>
+                            {isPositiveVariation ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                            <span>{Math.abs(variation).toFixed(1)}% vs mês anterior</span>
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 }

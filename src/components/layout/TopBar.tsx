@@ -6,7 +6,9 @@
 'use client';
 
 import { useTheme } from '@/components/providers/ThemeProvider';
-import styles from './TopBar.module.css';
+import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, Moon, Sun, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface TopBarProps {
     month: number;
@@ -26,39 +28,57 @@ export default function TopBar({
     const { theme, toggleTheme } = useTheme();
 
     return (
-        <header className={styles.topbar}>
-            <div className={styles.monthSelector}>
-                <button
+        <header className="sticky top-0 z-40 h-16 w-full flex items-center justify-between px-6 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/50">
+            {/* Month Selector */}
+            <div className="flex items-center gap-4">
+                <Button
+                    variant="glass"
+                    size="icon"
                     onClick={onPrevMonth}
-                    className={styles.monthBtn}
                     aria-label="Mês anterior"
+                    className="h-9 w-9 rounded-lg"
                 >
-                    ←
-                </button>
-                <span className={styles.monthLabel}>{monthLabel}</span>
-                <button
+                    <ChevronLeft className="w-5 h-5" />
+                </Button>
+
+                <span className="font-display text-lg font-semibold text-slate-200 min-w-[140px] text-center">
+                    {monthLabel}
+                </span>
+
+                <Button
+                    variant="glass"
+                    size="icon"
                     onClick={onNextMonth}
-                    className={styles.monthBtn}
                     aria-label="Próximo mês"
+                    className="h-9 w-9 rounded-lg"
                 >
-                    →
-                </button>
+                    <ChevronRight className="w-5 h-5" />
+                </Button>
             </div>
 
-            <div className={styles.actions}>
-                <button
+            {/* Actions */}
+            <div className="flex items-center gap-4">
+                <Button
+                    variant="glass"
+                    size="icon"
                     onClick={toggleTheme}
-                    className={styles.themeToggle}
-                    aria-label={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+                    aria-label="Alternar tema"
+                    className="h-10 w-10 rounded-full"
                 >
-                    {theme === 'light' ? '🌙' : '☀️'}
-                </button>
+                    {theme === 'light' ? (
+                        <Moon className="w-5 h-5 text-indigo-400" />
+                    ) : (
+                        <Sun className="w-5 h-5 text-amber-400" />
+                    )}
+                </Button>
 
-                <div className={styles.user}>
-                    <div className={styles.avatar}>
-                        {userName?.charAt(0).toUpperCase() ?? 'U'}
+                <div className="flex items-center gap-3 pl-4 border-l border-slate-800/50">
+                    <div className="flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 text-white font-bold text-sm shadow-[0_0_15px_rgba(59,130,246,0.4)]">
+                        {userName?.charAt(0).toUpperCase() ?? <User className="w-4 h-4" />}
                     </div>
-                    <span className={styles.userName}>{userName ?? 'Usuário'}</span>
+                    <span className="text-sm font-medium text-slate-300 hidden md:inline-block">
+                        {userName ?? 'Usuário'}
+                    </span>
                 </div>
             </div>
         </header>

@@ -97,7 +97,7 @@ export async function parseFinancialFile(file: File): Promise<ImportResult> {
     const workbook = XLSX.read(buffer, {
         type: 'buffer',
         codepage: 65001, // UTF-8
-        cellDates: true, // Auto parse dates
+        cellDates: false, // Don't auto parse dates to avoid timezone/guessing issues
     });
 
     const sheetName = workbook.SheetNames[0];
@@ -111,8 +111,7 @@ export async function parseFinancialFile(file: File): Promise<ImportResult> {
     const jsonData = XLSX.utils.sheet_to_json<any[]>(worksheet, {
         header: 1,
         defval: null,
-        raw: false, // Ensure we get formatted strings/dates handled decently, or true if we want raw values
-        dateNF: 'yyyy-mm-dd', // Force date format if possible
+        raw: true, // Get raw values (strings for CSV, numbers for Excel)
     }) as unknown[][];
 
     if (jsonData.length < 2) {

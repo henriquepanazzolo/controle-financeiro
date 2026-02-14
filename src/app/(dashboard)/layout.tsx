@@ -11,7 +11,6 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import { getMonthName, getCurrentMonthYear } from '@/utils/formatDate';
-import styles from './layout.module.css';
 
 export default function DashboardLayout({
     children,
@@ -57,9 +56,9 @@ export default function DashboardLayout({
     const monthLabel = `${getMonthName(month)} ${year}`;
 
     return (
-        <div className={styles.wrapper}>
+        <div className="flex min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
             <Sidebar />
-            <div className={styles.main}>
+            <div className="flex-1 flex flex-col md:ml-64 transition-all duration-300">
                 <TopBar
                     month={month}
                     year={year}
@@ -67,7 +66,7 @@ export default function DashboardLayout({
                     onNextMonth={handleNextMonth}
                     monthLabel={monthLabel}
                 />
-                <main className={styles.content}>
+                <main className="flex-1 p-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {children}
                 </main>
             </div>

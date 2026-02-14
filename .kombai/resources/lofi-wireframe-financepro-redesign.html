@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinancePro — Wireframe de Redesign (Dashboard)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+            padding: 16px;
+        }
+
+        /* Page header */
+        .wf-header {
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        .wf-header h1 { font-size: 20px; margin-bottom: 4px; }
+        .wf-header p { font-size: 13px; color: #666; }
+
+        /* Layout */
+        .wf-layout {
+            display: flex;
+            gap: 0;
+            min-height: 85vh;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* Sidebar */
+        .wf-sidebar {
+            width: 240px;
+            background: #1a1a1a;
+            color: #ccc;
+            padding: 16px 0;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .wf-sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 8px;
+        }
+        .wf-sidebar-logo .icon-placeholder {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: #444;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: #ccc;
+        }
+        .wf-sidebar-logo span { font-size: 16px; font-weight: bold; color: #fff; }
+
+        .wf-sidebar-section-label {
+            padding: 12px 16px 4px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+
+        .wf-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: background 0.15s;
+            position: relative;
+        }
+        .wf-nav-item:hover { background: #2a2a2a; }
+        .wf-nav-item.active {
+            background: #2a2a2a;
+            border-left-color: #666;
+            color: #fff;
+        }
+        .wf-nav-item .nav-icon {
+            width: 20px; height: 20px;
+            background: #555;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px;
+        }
+
+        .wf-sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wf-sidebar-footer .avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: #555;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; color: #fff;
+        }
+        .wf-sidebar-footer .user-info { font-size: 11px; }
+        .wf-sidebar-footer .user-name { color: #fff; font-weight: bold; }
+        .wf-sidebar-footer .user-email { color: #888; font-size: 10px; }
+
+        /* Main Content */
+        .wf-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+        }
+
+        /* TopBar */
+        .wf-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+        .wf-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wf-breadcrumb {
+            font-size: 12px;
+            color: #999;
+        }
+        .wf-breadcrumb strong { color: #333; }
+        .wf-month-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 6px 12px;
+        }
+        .wf-month-btn {
+            width: 24px; height: 24px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+        }
+        .wf-month-label { font-size: 13px; font-weight: bold; min-width: 120px; text-align: center; }
+        .wf-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .wf-topbar-btn {
+            width: 32px; height: 32px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+
+        /* Content area */
+        .wf-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        /* Page title row */
+        .wf-page-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .wf-page-title { font-size: 22px; font-weight: bold; }
+        .wf-page-subtitle { font-size: 12px; color: #999; }
+
+        /* Summary Cards */
+        .wf-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .wf-summary-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wf-summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: #999;
+        }
+        .wf-summary-card.accent-green::before { background: #666; }
+        .wf-summary-card.accent-red::before { background: #333; }
+        .wf-summary-card.accent-blue::before { background: #888; }
+        .wf-summary-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .wf-summary-card-label { font-size: 12px; color: #888; }
+        .wf-summary-card-icon {
+            width: 32px; height: 32px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .wf-summary-card-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .wf-summary-card-variation {
+            font-size: 11px;
+            color: #888;
+        }
+        .wf-summary-card-variation .up { color: #555; }
+        .wf-summary-card-variation .down { color: #333; font-weight: bold; }
+
+        /* Charts Grid - 2x2 with better proportions */
+        .wf-charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .wf-chart-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+            position: relative;
+        }
+        .wf-chart-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .wf-chart-title { font-size: 14px; font-weight: bold; }
+        .wf-chart-action {
+            font-size: 10px;
+            color: #888;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        /* Placeholder chart areas */
+        .wf-chart-placeholder {
+            background: #f9f9f9;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 12px;
+            min-height: 200px;
+            gap: 8px;
+        }
+        .wf-chart-placeholder .chart-icon {
+            font-size: 32px;
+            color: #ccc;
+        }
+
+        /* Donut legend */
+        .wf-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .wf-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .wf-legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            flex-shrink: 0;
+        }
+        .wf-legend-label { flex: 1; color: #666; }
+        .wf-legend-value { font-weight: bold; }
+
+        /* Top Expenses - Redesigned as compact table */
+        .wf-top-expenses {
+            grid-column: 1 / -1;
+        }
+        .wf-expense-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 12px;
+        }
+        .wf-expense-rank {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: bold;
+            flex-shrink: 0;
+        }
+        .wf-expense-icon {
+            width: 28px; height: 28px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .wf-expense-info { flex: 1; }
+        .wf-expense-desc { font-weight: 500; color: #333; }
+        .wf-expense-cat { font-size: 10px; color: #999; }
+        .wf-expense-amount { font-weight: bold; color: #333; }
+        .wf-expense-date { color: #aaa; font-size: 10px; width: 60px; text-align: right; }
+
+        /* Component badges */
+        .reuse-badge, .new-badge {
+            position: absolute;
+            top: 4px; right: 4px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            z-index: 10;
+            color: white;
+        }
+        .reuse-badge { background: #4CAF50; }
+        .new-badge { background: #FF9800; }
+
+        /* Quick Actions bar - NEW */
+        .wf-quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .wf-quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: inherit;
+        }
+        .wf-quick-action-btn.primary {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+        .wf-quick-action-btn .btn-icon {
+            width: 16px; height: 16px;
+            background: currentColor;
+            border-radius: 3px;
+            opacity: 0.3;
+        }
+
+        /* Budget alerts - NEW */
+        .wf-alerts {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .wf-alert {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 12px;
+            position: relative;
+        }
+        .wf-alert-icon {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .wf-alert-text { flex: 1; color: #666; }
+        .wf-alert-text strong { color: #333; }
+        .wf-alert-action {
+            font-size: 10px;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .wf-layout { flex-direction: column; }
+            .wf-sidebar { width: 100%; min-height: auto; position: relative; }
+            .wf-sidebar-footer { position: relative; }
+            .wf-summary-cards { grid-template-columns: repeat(2, 1fr); }
+            .wf-charts-grid { grid-template-columns: 1fr; }
+            .wf-top-expenses { grid-column: auto; }
+            .wf-alerts { flex-direction: column; }
+        }
+        @media (max-width: 600px) {
+            .wf-summary-cards { grid-template-columns: 1fr; }
+            .wf-quick-actions { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wf-header">
+        <h1>FinancePro — Wireframe de Redesign (Dashboard)</h1>
+        <p>Proposta de redesign com melhorias de UX: Quick Actions, Alertas de Orçamento, Perfil no Sidebar, ícones SVG e melhor hierarquia de informação</p>
+    </div>
+
+    <div class="wf-layout">
+
+        <!-- ============ SIDEBAR ============ -->
+        <!-- REUSABLE: Sidebar from src/components/layout/Sidebar.tsx -->
+        <aside class="wf-sidebar" style="position: relative;">
+            <span class="reuse-badge" title="src/components/layout/Sidebar.tsx">[REUSE] Sidebar</span>
+
+            <div class="wf-sidebar-logo">
+                <div class="icon-placeholder">FP</div>
+                <span>FinancePro</span>
+            </div>
+
+            <div class="wf-sidebar-section-label">Menu Principal</div>
+
+            <div class="wf-nav-item active">
+                <div class="nav-icon">▣</div>
+                Dashboard
+            </div>
+            <div class="wf-nav-item">
+                <div class="nav-icon">⇄</div>
+                Transações
+            </div>
+            <div class="wf-nav-item">
+                <div class="nav-icon">☰</div>
+                Categorias
+            </div>
+            <div class="wf-nav-item">
+                <div class="nav-icon">◻</div>
+                Orçamentos
+            </div>
+            <div class="wf-nav-item">
+                <div class="nav-icon">◎</div>
+                Metas
+            </div>
+
+            <div class="wf-sidebar-section-label">Ferramentas</div>
+
+            <div class="wf-nav-item">
+                <div class="nav-icon">📊</div>
+                Relatórios
+            </div>
+            <div class="wf-nav-item">
+                <div class="nav-icon">↓</div>
+                Importar
+            </div>
+
+            <!-- NEW: User profile in sidebar footer -->
+            <div class="wf-sidebar-footer" style="position: relative;">
+                <span class="new-badge" title="Novo: perfil do usuário no sidebar">[NEW] UserProfile</span>
+                <div class="avatar">H</div>
+                <div class="user-info">
+                    <div class="user-name">Henrique</div>
+                    <div class="user-email">henrique@email.com</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============ MAIN ============ -->
+        <div class="wf-main">
+
+            <!-- TopBar -->
+            <!-- REUSABLE: TopBar from src/components/layout/TopBar.tsx -->
+            <div class="wf-topbar" style="position: relative;">
+                <span class="reuse-badge" title="src/components/layout/TopBar.tsx">[REUSE] TopBar</span>
+                <div class="wf-topbar-left">
+                    <div class="wf-breadcrumb">Dashboard › <strong>Visão Geral</strong></div>
+                    <div class="wf-month-selector">
+                        <button class="wf-month-btn">◀</button>
+                        <span class="wf-month-label">Fevereiro 2026</span>
+                        <button class="wf-month-btn">▶</button>
+                    </div>
+                </div>
+                <div class="wf-topbar-right">
+                    <button class="wf-topbar-btn" title="Notificações">🔔</button>
+                    <button class="wf-topbar-btn" title="Tema">◐</button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="wf-content">
+
+                <!-- Page Title Row -->
+                <div class="wf-page-title-row">
+                    <div>
+                        <div class="wf-page-title">Olá, Henrique 👋</div>
+                        <div class="wf-page-subtitle">Aqui está o resumo das suas finanças em Fevereiro 2026</div>
+                    </div>
+                </div>
+
+                <!-- NEW: Quick Actions -->
+                <div class="wf-quick-actions" style="position: relative;">
+                    <span class="new-badge" title="Novo: barra de ações rápidas">[NEW] QuickActions</span>
+                    <button class="wf-quick-action-btn primary">+ Nova Despesa</button>
+                    <button class="wf-quick-action-btn">+ Nova Receita</button>
+                    <button class="wf-quick-action-btn">↓ Importar Extrato</button>
+                    <button class="wf-quick-action-btn">📊 Relatório do Mês</button>
+                </div>
+
+                <!-- NEW: Budget Alerts -->
+                <div class="wf-alerts" style="position: relative;">
+                    <span class="new-badge" title="Novo: alertas inteligentes">[NEW] SmartAlerts</span>
+                    <div class="wf-alert">
+                        <div class="wf-alert-icon">⚠</div>
+                        <div class="wf-alert-text">
+                            <strong>Alimentação</strong> está em 87% do orçamento
+                        </div>
+                        <button class="wf-alert-action">Ver</button>
+                    </div>
+                    <div class="wf-alert">
+                        <div class="wf-alert-icon">🎯</div>
+                        <div class="wf-alert-text">
+                            <strong>Viagem</strong> precisa de R$ 200/mês para atingir prazo
+                        </div>
+                        <button class="wf-alert-action">Ver</button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <!-- REUSABLE: SummaryCard from src/app/(dashboard)/DashboardClient.tsx -->
+                <div class="wf-summary-cards" style="position: relative;">
+                    <span class="reuse-badge" title="src/app/(dashboard)/DashboardClient.tsx">[REUSE] SummaryCard</span>
+
+                    <div class="wf-summary-card accent-blue">
+                        <div class="wf-summary-card-header">
+                            <span class="wf-summary-card-label">Saldo do Mês</span>
+                            <div class="wf-summary-card-icon">[ic]</div>
+                        </div>
+                        <div class="wf-summary-card-value">R$ 2.450,00</div>
+                        <div class="wf-summary-card-variation">
+                            <span class="up">↑ 12.5%</span> vs mês anterior
+                        </div>
+                    </div>
+
+                    <div class="wf-summary-card accent-green">
+                        <div class="wf-summary-card-header">
+                            <span class="wf-summary-card-label">Receitas</span>
+                            <div class="wf-summary-card-icon">[ic]</div>
+                        </div>
+                        <div class="wf-summary-card-value">R$ 8.500,00</div>
+                        <div class="wf-summary-card-variation">
+                            <span class="up">↑ 5.0%</span> vs mês anterior
+                        </div>
+                    </div>
+
+                    <div class="wf-summary-card accent-red">
+                        <div class="wf-summary-card-header">
+                            <span class="wf-summary-card-label">Despesas</span>
+                            <div class="wf-summary-card-icon">[ic]</div>
+                        </div>
+                        <div class="wf-summary-card-value">R$ 6.050,00</div>
+                        <div class="wf-summary-card-variation">
+                            <span class="down">↑ 8.3%</span> vs mês anterior
+                        </div>
+                    </div>
+
+                    <div class="wf-summary-card">
+                        <div class="wf-summary-card-header">
+                            <span class="wf-summary-card-label">Transações</span>
+                            <div class="wf-summary-card-icon">[ic]</div>
+                        </div>
+                        <div class="wf-summary-card-value">47</div>
+                        <div class="wf-summary-card-variation">
+                            <span>Este mês</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="wf-charts-grid">
+
+                    <!-- Pie Chart -->
+                    <div class="wf-chart-card" style="position: relative;">
+                        <span class="reuse-badge" title="Recharts PieChart">[REUSE] PieChart</span>
+                        <div class="wf-chart-card-header">
+                            <div class="wf-chart-title">Despesas por Categoria</div>
+                            <div class="wf-chart-action">Ver tudo</div>
+                        </div>
+                        <div class="wf-chart-placeholder" style="min-height: 160px;">
+                            <div class="chart-icon">◉</div>
+                            [Donut Chart]
+                        </div>
+                        <div class="wf-legend">
+                            <div class="wf-legend-item">
+                                <div class="wf-legend-dot" style="background:#888"></div>
+                                <span class="wf-legend-label">Alimentação</span>
+                                <span class="wf-legend-value">32%</span>
+                            </div>
+                            <div class="wf-legend-item">
+                                <div class="wf-legend-dot" style="background:#aaa"></div>
+                                <span class="wf-legend-label">Transporte</span>
+                                <span class="wf-legend-value">24%</span>
+                            </div>
+                            <div class="wf-legend-item">
+                                <div class="wf-legend-dot" style="background:#ccc"></div>
+                                <span class="wf-legend-label">Moradia</span>
+                                <span class="wf-legend-value">22%</span>
+                            </div>
+                            <div class="wf-legend-item">
+                                <div class="wf-legend-dot" style="background:#ddd"></div>
+                                <span class="wf-legend-label">Lazer</span>
+                                <span class="wf-legend-value">12%</span>
+                            </div>
+                            <div class="wf-legend-item">
+                                <div class="wf-legend-dot" style="background:#eee"></div>
+                                <span class="wf-legend-label">Outros</span>
+                                <span class="wf-legend-value">10%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bar Chart + Area Chart stacked -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="wf-chart-card" style="position: relative; flex: 1;">
+                            <span class="reuse-badge" title="Recharts BarChart">[REUSE] BarChart</span>
+                            <div class="wf-chart-card-header">
+                                <div class="wf-chart-title">Receita vs Despesa (últimos 6 meses)</div>
+                                <div class="wf-chart-action">6M | 12M</div>
+                            </div>
+                            <div class="wf-chart-placeholder">
+                                <div class="chart-icon">▊▊▊</div>
+                                [Bar Chart — Receita vs Despesa]
+                            </div>
+                        </div>
+
+                        <div class="wf-chart-card" style="position: relative; flex: 1;">
+                            <span class="reuse-badge" title="Recharts AreaChart">[REUSE] AreaChart</span>
+                            <div class="wf-chart-card-header">
+                                <div class="wf-chart-title">Evolução do Saldo Acumulado</div>
+                            </div>
+                            <div class="wf-chart-placeholder">
+                                <div class="chart-icon">📈</div>
+                                [Area Chart — Saldo Acumulado]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top 5 Expenses - Full width -->
+                    <div class="wf-chart-card wf-top-expenses" style="position: relative;">
+                        <span class="reuse-badge" title="src/app/(dashboard)/DashboardClient.tsx">[REUSE] TopExpenses</span>
+                        <div class="wf-chart-card-header">
+                            <div class="wf-chart-title">Top 5 Maiores Despesas</div>
+                            <div class="wf-chart-action">Ver todas →</div>
+                        </div>
+
+                        <div class="wf-expense-row">
+                            <div class="wf-expense-rank">1</div>
+                            <div class="wf-expense-icon">[ic]</div>
+                            <div class="wf-expense-info">
+                                <div class="wf-expense-desc">Aluguel Apartamento</div>
+                                <div class="wf-expense-cat">Moradia › Aluguel</div>
+                            </div>
+                            <div class="wf-expense-amount">R$ 2.200,00</div>
+                            <div class="wf-expense-date">01/02</div>
+                        </div>
+                        <div class="wf-expense-row">
+                            <div class="wf-expense-rank">2</div>
+                            <div class="wf-expense-icon">[ic]</div>
+                            <div class="wf-expense-info">
+                                <div class="wf-expense-desc">Supermercado Extra</div>
+                                <div class="wf-expense-cat">Alimentação › Supermercado</div>
+                            </div>
+                            <div class="wf-expense-amount">R$ 850,00</div>
+                            <div class="wf-expense-date">05/02</div>
+                        </div>
+                        <div class="wf-expense-row">
+                            <div class="wf-expense-rank">3</div>
+                            <div class="wf-expense-icon">[ic]</div>
+                            <div class="wf-expense-info">
+                                <div class="wf-expense-desc">Parcela do Carro</div>
+                                <div class="wf-expense-cat">Transporte › Financiamento</div>
+                            </div>
+                            <div class="wf-expense-amount">R$ 780,00</div>
+                            <div class="wf-expense-date">10/02</div>
+                        </div>
+                        <div class="wf-expense-row">
+                            <div class="wf-expense-rank">4</div>
+                            <div class="wf-expense-icon">[ic]</div>
+                            <div class="wf-expense-info">
+                                <div class="wf-expense-desc">Plano de Saúde</div>
+                                <div class="wf-expense-cat">Saúde › Plano</div>
+                            </div>
+                            <div class="wf-expense-amount">R$ 520,00</div>
+                            <div class="wf-expense-date">15/02</div>
+                        </div>
+                        <div class="wf-expense-row">
+                            <div class="wf-expense-rank">5</div>
+                            <div class="wf-expense-icon">[ic]</div>
+                            <div class="wf-expense-info">
+                                <div class="wf-expense-desc">Academia Smart Fit</div>
+                                <div class="wf-expense-cat">Saúde › Academia</div>
+                            </div>
+                            <div class="wf-expense-amount">R$ 149,90</div>
+                            <div class="wf-expense-date">01/02</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div><!-- end content -->
+        </div><!-- end main -->
+    </div><!-- end layout -->
+
+    <!-- Component Summary -->
+    <div style="margin-top: 24px; background: #fff; border: 2px solid #333; border-radius: 8px; padding: 20px;">
+        <h2 style="font-size: 16px; margin-bottom: 12px;">📋 Resumo de Componentes</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+                <tr style="background: #f5f5f5; text-align: left;">
+                    <th style="padding: 8px; border: 1px solid #ddd;">Componente</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">Tipo</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">Caminho</th>
+                    <th style="padding: 8px; border: 1px solid #ddd;">Notas de Redesign</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Sidebar</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟢 REUSE</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/components/layout/Sidebar.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Adicionar seções com labels, perfil do usuário no footer, ícones SVG, menu hamburger mobile</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">TopBar</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟢 REUSE</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/components/layout/TopBar.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Adicionar breadcrumb, ícone de notificações, botão de logout</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">SummaryCard</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟢 REUSE</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/app/(dashboard)/DashboardClient.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Substituir emojis por ícones SVG, extrair como componente separado</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">PieChart</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟢 REUSE</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Recharts</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Manter, adicionar botão "Ver tudo"</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">BarChart / AreaChart</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟢 REUSE</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Recharts</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Adicionar filtro de período (6M/12M)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">QuickActions</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟠 NEW</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/components/dashboard/QuickActions.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Barra de ações rápidas para criar transações, importar, acessar relatórios</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">SmartAlerts</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟠 NEW</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/components/dashboard/SmartAlerts.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Alertas inteligentes sobre orçamentos e metas que precisam de atenção</td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">UserProfile</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">🟠 NEW</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">src/components/layout/UserProfile.tsx</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">Perfil do usuário no sidebar footer com avatar, nome e botão de logout</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
